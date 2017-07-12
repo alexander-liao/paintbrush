@@ -16,7 +16,7 @@ DEBUG = False
 ##########
 
 code_page  = '''¡¢£¤¥¦©¬®µ½¿€ÆÇÐÑ×ØŒÞßæçðıȷñ÷øœþ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¶'''
-code_page += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁽⁾ƁƇƊƑƓƘⱮƝƤƬƲȤɓƈɗƒɠɦƙɱɲƥʠɼʂƭʋȥẠḄḌẸḤỊḲḶṂṆỌṚṢṬỤṾẈỴẒȦḂĊḊĖḞĠḢİĿṀṄȮṖṘṠṪẆẊẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż«»‘’“”'''
+code_page += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁽⁾▁▔▏▕ƑƓƘⱮƝƤƬƲȤɓƈɗƒɠɦƙɱɲƥʠɼʂƭʋȥẠḄḌẸḤỊḲḶṂṆỌṚṢṬỤṾẈỴẒȦḂĊḊĖḞĠḢİĿṀṄȮṖṘṠṪẆẊẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż«»‘’“”'''
 
 def extendLeft():
     global grid, background, ox, mod
@@ -183,9 +183,9 @@ def execute(code):
             else:
                 used = True
             for q in range(reps):
-                for index in range(len(blocks)):
-                    if blocks[index] == '$0':
-                        blocks[index] = q
+                for k in range(len(blocks)):
+                    if blocks[k] == '$0':
+                        blocks[k] = q
                         used = True
                 execute(blocks)
             if not used:
@@ -236,6 +236,28 @@ def execute(code):
                     x = x % len(grid[y])
                 else:
                     expand()
+        elif code[index] == '▁':
+            shift = pop() if type(peek()) == type(0) else 1
+            grid = grid[:-shift] or [[background]]
+            mod = mod[:-shift] or [[False]]
+            while y + oy >= len(grid):
+                y -= 1
+        elif code[index] == '▔':
+            shift = pop() if type(peek()) == type(0) else 1
+            grid = grid[shift:] or [[background]]
+            mod = mod[shift:] or [[False]]
+            y -= shift
+        elif code[index] == '▏':
+            shift = pop() if type(peek()) == type(0) else 1
+            grid = [row[shift:] for row in grid] or [[background]]
+            mod = [row[shift:] for row in mod] or [[False]]
+            x -= shift
+        elif code[index] == '▕':
+            shift = pop() if type(peek()) == type(0) else 1
+            grid = [row[:-shift] for row in grid] or [[background]]
+            mod = [row[:-shift] for row in mod] or [[False]]
+            while x + ox >= len(grid[y]):
+                x -= 1
         elif code[index] == '»':
             index += 1
             push(code[index])
