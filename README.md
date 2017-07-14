@@ -79,8 +79,8 @@ Command|Description
 `↓↑←→`|If the current top-of-stack is an integer, move the pointer that many spaces in the indicated direction. If the current top-of-stack is a string, move the pointer along and write out the string in the indicated direction. Otherwise, move the pointer 1 space. This will push the grid boundaries if necessary.
 `⇩⇧⇦⇨`|Same as above but this will wrap around the grid boundaries if necessary.
 `▁▔▏▕`|If the current top-of-stack is an integer, remove that many rows/columns from the indicated side of the grid. Otherwise, remove 1.
-`▄▀▌▐`|Mirror the entire grid, duplicating the innermost edge. `▄` will copy the top edge to the bottom.
-`┻┳┫┣`|Mirror the entire grid, overlapping the innermost edge. `┻` will copy the top edge to the bottom.
+`▄▀▌▐`|Mirror the entire grid, duplicating the innermost edge. `▄` will copy the top edge to the bottom. This will change some characters that have backwards versions, unless the modifier is true.
+`┻┳┫┣`|Mirror the entire grid, overlapping the innermost edge. `┻` will copy the top edge to the bottom. This will change some characters that have backwards versions, unless the modifier is true.
 `━`|If the current top-of-stack is an integer, delete `2 * top - 1` rows centered around the current row, moving the pointer up as necessary if it ends up off of the grid. Otherwise, remove 1.
 `┃`|If the current top-of-stack is an integer, delete `2 * top - 1` columns centered around the current column, moving the pointer left as necessary if it ends up off of the grid. Otherwise, remove 1.
 `┴┬┤├`|If the current top-of-stack is an integer, insert that many extra rows/columns in the direction of the short leg of the symbol. Otherwise, insert 1.
@@ -100,6 +100,7 @@ Command|Description
 `¦`|Stringify the top of the stack and then push each character individually in reverse order so that the first character becomes the new top of the stack.
 `¿{...}`|Runs the code block if and only if the top of the stack represents True. The top of the stack can be retrieved from within the code block using `$0`. A normal command may be used as well if it forms a single block and does not require arguments. Does not pop the top of the stack off.
 `¤{...}`|Runs the code block if and only if the top of the stack represents False. The top of the stack can be retrieved from within the code block using `$0`. A normal command may be used as well if it forms a single block and does not require arguments. Does not pop the top of the stack off.
+`œ`|Sets the modifier to true, which is always set back to false by the next command regardless of whether or not it actually makes a difference.
 
 ## examples
 These are some examples of some things that you can do with Paintbrush. The first section consists of basic test programs, and the second part moves into ASCII-art, which is what this language is really all about.
