@@ -1,7 +1,6 @@
 import sys
 import re
 import ast
-from evaluator import evaluate
 
 background = ' '
 grid = [[background]]
@@ -19,12 +18,12 @@ DEBUG = False
 ##########
 
 mirrorhrz  = '''¡¢£¤¥¦©¬®µ½¿€ÆÇÐÑ×ØŒÞßæçðıȷñ÷øœþ !"#$%&'()*+,-.\\0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¶'''
-mirrorhrz += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁽⁾▔▁▏▕▀▄▌▐┳┻┫┣━┃═║┬┴┤├┯┷┨┠↶↷↑↓←→↖↗↘↙⇧⇩⇦⇨↥↧↤↦⇑⇓⇐⇒ẒȦḂĊḊĖḞĠḢİĿṀṄȮṖṘṠṪẆẊẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż«»‘’“”'''
+mirrorhrz += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁽⁾▔▁▏▕▀▄▌▐┳┻┫┣━┃═║┬┴┤├┯┷┨┠↶↷↑↓←→↖↗↘↙⇧⇩⇦⇨⇖⇗⇘⇙↥↧↤↦⇑⇓⇐⇒▲▼◀▶◤◥◢◣△▽◁▷◸◹◿◺ẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż«»‘’“”'''
 mirrorver  = '''¡¢£¤¥¦©¬®µ½¿€ÆÇÐÑ×ØŒÞßæçðıȷñ÷øœþ !"#$%&'()*+,-.\\0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ]/[^_`abcdefghijklmnopqrstuvwxyz}|{~¶'''
-mirrorver += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁾⁽▁▔▕▏▄▀▌▐┻┳┣┫━┃═║┴┬├┤┷┯┠┨↷↶↓↑→←↘↙↖↗⇩⇧⇨⇦↧↥↦↤⇓⇑⇒⇐ẒȦḂĊḊĖḞĠḢİĿṀṄȮṖṘṠṪẆẊẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż»«‘’“”'''
+mirrorver += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁾⁽▁▔▕▏▄▀▌▐┻┳┣┫━┃═║┴┬├┤┷┯┠┨↷↶↓↑→←↘↙↖↗⇩⇧⇨⇦⇘⇙⇖⇗↧↥↦↤⇓⇑⇒⇐▼▲▶◀◢◣◤◥▽△▷◁◿◺◸◹ẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż»«‘’“”'''
 code_page  = '''¡¢£¤¥¦©¬®µ½¿€ÆÇÐÑ×ØŒÞßæçðıȷñ÷øœþ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¶'''
-code_page += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁽⁾▁▔▏▕▄▀▌▐┻┳┫┣━┃═║┴┬┤├┷┯┨┠↶↷↓↑←→↙↘↗↖⇩⇧⇦⇨↧↥↤↦⇓⇑⇐⇒ẒȦḂĊḊĖḞĠḢİĿṀṄȮṖṘṠṪẆẊẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż«»‘’“”'''
-#               !-!!!!-----!!!--!!!!--!----!!-!--!------!!!!-!------------!!-!-!!---------------------------------!---------!------!-!-----!-!--
+code_page += '''°¹²³⁴⁵⁶⁷⁸⁹⁺¯⁼⁽⁾▁▔▏▕▄▀▌▐┻┳┫┣━┃═║┴┬┤├┷┯┨┠↶↷↓↑←→↙↘↗↖⇩⇧⇦⇨⇙⇘⇗⇖↧↥↤↦⇓⇑⇐⇒▼▲◀▶◣◢◥◤▽△◁▷◺◿◹◸ẎŻạḅḍẹḥịḳḷṃṇọṛṣṭụṿẉỵẓȧḃċḋėḟġḣŀṁṅȯṗṙṡṫẇẋẏż«»‘’“”'''
+#               !-!!!!!----!!!--!!!!--!----!!-!--!------!!!!-!------------!!-!-!!---------------------------------!---------!------!-!-----!-!--
 #               ---------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-----------------------------------------------------------------!!----
 
 syms = {}
@@ -327,27 +326,35 @@ def execute(code):
 		elif code[index] == '€':
 			push(ast.literal_eval(input()))
 		elif code[index] == 'Ø':
-			push(evaluate(input()))
+			push(eval(input()))
 		elif code[index] == 'Ñ':
 			push(sys.stdin.readline())
 		elif code[index] == 'ñ':
 			push(sys.stdin.read(1))
 		elif code[index] == 'Œ':
 			push(syms[sys.stdin.read(1)])
-		elif code[index] in '↓↑←→↙↘↗↖⇩⇧⇦⇨':
-			i = '↓↑←→↙↘↗↖⇩⇧⇦⇨'.find(code[index])
+		elif code[index] in '↓↑←→↙↘↗↖⇩⇧⇦⇨⇙⇘⇗⇖▼▲◀▶◣◢◥◤▽△◁▷◺◿◹◸':
+			i = '↓↑←→↙↘↗↖⇩⇧⇦⇨⇙⇘⇗⇖▼▲◀▶◣◢◥◤▽△◁▷◺◿◹◸'.find(code[index])
 			dx = [0, 0, -1, 1, -1, 1, 1, -1][i % 8]
 			dy = [1, -1, 0, 0, 1, 1, -1, -1][i % 8]
-			wrap = i >= 8
+			wrap = i % 16 >= 8
+			reset = i >= 16
+			kkx, kky, kox, koy = x, y, ox, oy
 			arg = pop()
 			if type(arg) == type(0):
-				x += dx * arg
-				y += dy * arg
-				if wrap:
-					y = y % len(grid)
-					x = x % len(grid[y + oy])
-				else:
-					expand()
+				char = pop() if type(peek()) == type('') and len(peek()) == 1 else None
+				for k in range(arg):
+					kx, ky = x, y
+					if char:
+						place(char)
+					if (x, y) == (kx, ky):
+						x += dx
+						y += dy
+					if wrap:
+						y = (y + oy) % len(grid)
+						oy = 0
+						x = (x + ox) % len(grid[y + oy])
+						ox = 0
 			elif type(arg) == type(''):
 				for i in range(len(arg)):
 					kx, ky = x, y
@@ -356,18 +363,24 @@ def execute(code):
 						x += dx
 						y += dy
 					if wrap:
-						y = y % len(grid)
-						x = x % len(grid[y + oy])
+						y = (y + oy) % len(grid)
+						oy = 0
+						x = (x + ox) % len(grid[y + oy])
+						ox = 0
 					else:
 						expand()
 			else:
 				x += dx
 				y += dy
 				if wrap:
-					y = y % len(grid)
-					x = x % len(grid[y + oy])
+					y = (y + oy) % len(grid)
+					oy = 0
+					x = (x + ox) % len(grid[y + oy])
+					ox = 0
 				else:
 					expand()
+			if reset:
+				x, y, ox, oy = kkx, kky, kox, koy
 		elif code[index] == '▁':
 			shift = pop() if type(peek()) == type(0) else 1
 			grid = grid[:-shift] or [[background]]
@@ -556,8 +569,15 @@ def execute(code):
 			modifier = True
 			index += 1
 			continue
+		elif code[index] == '©':
+			if len(stack) > 0:
+				push(peek())
+			index += 1
+			continue
 		else:
 			push(code[index])
+			index += 1
+			continue
 		index += 1
 		hist += [(x, y)]
 		modifier = False
